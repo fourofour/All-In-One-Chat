@@ -1,11 +1,14 @@
 'use strict';
 
-let app = require('express')();
+let express = require('express');
+let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
+app.use('/static', express.static('app'));
+
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/app/index.html');
 });
 
 io.on('connection', function(socket) {
@@ -15,11 +18,8 @@ io.on('connection', function(socket) {
     console.log('user disconnected');
   });
 
-  socket.on('chat message', function(msg){
+  socket.on('chat message', function(msg) {
     console.log('message: ' + msg);
-  });
-
-  socket.on('chat message', function(msg){
     io.emit('chat message', msg);
   });
 });
