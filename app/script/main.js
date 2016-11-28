@@ -1,11 +1,29 @@
-let socket = io();
-let form = document['message_form'];
-let message_board = document.getElementById('messages_board');
+class Log {
+  constructor(target = document) {
+    this.target = target
+  }
 
-form.addEventListener('submit', function(event) {
+  message(message = '') {        
+      let element = document.createElement('li'),
+          text = document.createTextNode(message);
+
+      element.appendChild(text);
+      this.target.appendChild(element);
+  }
+}
+
+// elements collection
+let ec = {};
+ec.form = document['message_form'];
+ec.message_board = document.getElementById('messages_board');
+
+let socket = io();
+let log = new Log(ec.message_board);
+
+ec.form.addEventListener('submit', function(event) {
   event.preventDefault();
   
-  let message = form['message'];
+  let message = ec.form['message'];
   
   if(message.value.length > 0)
     socket.emit('chat message', message.value);
@@ -14,10 +32,6 @@ form.addEventListener('submit', function(event) {
 });
 
 socket.on('chat message', function(message) {
-  let element = document.createElement('li'),
-      text = document.createTextNode(message);
-
-  element.appendChild(text);
-  message_board.appendChild(element);
+  log.message(message);
 });
 

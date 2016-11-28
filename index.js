@@ -6,6 +6,7 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 app.use('/static', express.static('app'));
+app.use('/node_modules', express.static('node_modules'));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/app/index.html');
