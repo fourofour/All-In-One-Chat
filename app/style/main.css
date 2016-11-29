@@ -13,6 +13,7 @@
     background-color: rgba(0,0,0 , 0.25);
     padding: 0;
     margin: 0;
+    overflow: auto;
 }
 
 #message_board li {
@@ -21,6 +22,21 @@
     padding: 10px;
     margin: 0;
 }
+
+#message_board li:nth-child(2n+1) {
+	background-color: rgba(0, 0, 0, 0.125);
+}
+
+#message_board li > * {
+	display: inline-block;
+}
+
+#message_board li .label {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+#message_board li .info {}
 
 #message_form {
 	position: fixed;
@@ -124,6 +140,14 @@
 				0 0 3px 0 rgba(255, 255, 255, 0.25);
 }
 
+#online_list {
+	display: block;
+	list-style-type: none;
+}
+
+#online_list li {
+	padding: 5px;
+}
 
 
 

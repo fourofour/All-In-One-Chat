@@ -33,7 +33,15 @@ io.on('connection', function(socket) {
 
   socket.on('register:username', function(username) {
     config.onlines.set(socket.id, username);
+
     io.to(socket.id).emit('register:username', username);
+
+    let list = [...config.onlines];
+    list = list.map(function(currentValue, index, array) {
+      return currentValue[1];
+    });
+
+    io.emit('update:list', list);
   });
 });
 
