@@ -1,8 +1,130 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font: 13px Helvetica, Arial; }
-form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-#messages_board { list-style-type: none; margin: 0; padding: 0; }
-#messages_board li { padding: 5px 10px; }
-#messages_board li:nth-child(odd) { background: #eee; }
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+#message_board {   
+ 	position: fixed;
+    top: 0;
+    right: 200px;
+    left: 0;
+    bottom: 50px;
+    background-color: rgba(0,0,0 , 0.25);
+    padding: 0;
+    margin: 0;
+}
+
+#message_board li {
+	list-style-type: none;
+	display: block;
+    padding: 10px;
+    margin: 0;
+}
+
+#message_form {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 200px;
+	height: 50px;
+	border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+#message_form > * {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	display: block;
+	border-style: none;
+	border-radius: 0;
+}
+
+#message_form input {
+	left: 0;
+	right: 10%;
+	width: 90%;
+	height: 100%;
+	padding: 10px;
+}
+
+#message_form button {
+	right: 0;
+	width: 10%;
+	background-color: #3498db;
+	border-left: 1px solid #44a8eb;
+	color: #fff;
+}
+
+#online_list {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 200px;
+	bottom: 0;
+	border-left: 1px solid rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+#register_form {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+#register_form .inner_layer {
+	position: absolute;
+	top: 50%;
+	right: 50%;
+	width: 200px;
+	margin-right: -50px;
+	margin-top: -50px;
+}
+
+#register_form .inner_layer > * {
+	width: 100%;
+	display: block;
+}
+
+#register_form .inner_layer .label {
+	color: #fff;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+#register_form .inner_layer input {
+	margin-bottom: 10px;
+	background-color: #ecf0f1;
+	color: #000;
+	border-style: none;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+#register_form .inner_layer button {
+	background-color: #3498db;
+	color: #fff;
+	border-style: none;
+	border-radius: 4px;
+	padding: 5px;
+	cursor: pointer;
+}
+
+#register_form .inner_layer button:hover {
+	background-color: #399de0;
+	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.125) inset;
+}
+
+#register_form .inner_layer button:active {
+	background-color: #44a8eb;
+	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.125) inset,
+				0 0 3px 0 rgba(255, 255, 255, 0.25);
+}
+
+
+
+
+
