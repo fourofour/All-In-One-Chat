@@ -27,6 +27,7 @@ class Log {
     element.appendChild(span1);
 
     this.message_board.appendChild(element);
+    this.message_board.scrollTop = this.message_board.scrollHeight;
   }
 
   list(list = []) {
