@@ -38,12 +38,20 @@ class Log {
     for(let i=0; i < list.length; i++) {
       let element = document.createElement('li'),
           span1 = document.createElement('span'),
-          text1 = document.createTextNode(list[i][1]);
+          text1 = document.createTextNode(list[i][1]),
+          span2 = document.createElement('span'),
+          text2 = document.createTextNode('poke');
 
-      span1.setAttribute('data-socket-id', list[i][0]);
-      span1.addEventListener('click', client.event.poke);
       span1.appendChild(text1);
+            
+      span2.classList.add('poke');
+      span2.setAttribute('data-socket-id', list[i][0]);
+      span2.setAttribute('data-name', list[i][1]);
+      span2.addEventListener('click', client.event.poke);
+      span2.appendChild(text2);
+
       element.appendChild(span1);
+      element.appendChild(span2);
 
       this.online_list.appendChild(element);
     }
@@ -94,10 +102,12 @@ class Client {
 
     this.event = {
       poke(event) {
+        event.preventDefault();
+        
         let data = {
           username : config.get('username'),
           target : {
-            username: this.innerHTML,
+            username: this.getAttribute('data-name'),
             id: this.getAttribute('data-socket-id')
           }
         };

@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
       };
 
       let confirm = {
-        username,
+        username: 'System',
         message: ' You poked ' + targetUsername
       };
 

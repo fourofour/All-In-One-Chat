@@ -93,12 +93,14 @@
 }
 
 #online_list li {
-	padding: 5px;
+    padding: 5px 10px;
+	clear: both;
 }
 
-#online_list li span {
+#online_list li .poke {
 	cursor: pointer;
 	display: inline-block;
+	float: right;
 }
 
 #register_form {
