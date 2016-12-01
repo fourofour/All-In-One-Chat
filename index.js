@@ -23,18 +23,24 @@ io.on('connection', function(socket) {
   });
 
   socket.on('new:message', function(message) {
-    let data = {
-      username: config.onlines.get(socket.id),
-      message: message
+    let option = {
+      label: config.onlines.get(socket.id),
+      message: message,
+      id: socket.id
     }
 
-    io.emit('new:message', data);
+    io.emit('new:message', option);
   });
 
   socket.on('register:username', function(username) {
     config.onlines.set(socket.id, username);
 
-    io.to(socket.id).emit('register:username', username);
+    let data = {
+      username,
+      id: socket.id
+    }
+
+    io.to(socket.id).emit('register:username', data);
 
     // Need to send socket.id for poke, just for now
     // let list = [...config.onlines];
@@ -49,23 +55,23 @@ io.on('connection', function(socket) {
   });
 
   socket.on('new:poke', function(data) {
-    if(socket.id !== data.target.id) { // to prevent poking themself
+    if(socket.id !== data.id) { // to prevent poking themself
       let username = config.onlines.get(socket.id),
-          targetUsername = config.onlines.get(data.target.id);
+          targetUsername = config.onlines.get(data.id);
 
-      let info = {
-        username,
+      let option = {
+        label: username,
         id: socket.id
       };
 
-      let confirm = {
-        username: 'System',
-        message: ' You poked ' + targetUsername
+      let option2 = {
+        code: 1,
+        message: 'You poked ' + targetUsername
       };
 
-      if(username === data.username && targetUsername === data.target.username) {
-        io.to(data.target.id).emit('new:poke', info)
-        io.to(socket.id).emit('new:message', confirm);
+      if(targetUsername === data.username) { // make sure about the information
+        io.to(data.id).emit('new:poke', option)
+        io.to(socket.id).emit('new:message', option2);
       }
     }
   });

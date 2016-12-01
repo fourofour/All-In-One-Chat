@@ -1,3 +1,14 @@
+/**
+*	data-state
+**		loaded
+**
+*
+**/
+
+body[data-state="loaded"] #register_form {
+	display: block;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -43,6 +54,35 @@
 
 #message_board li .info {
 	border-radius: 3px;
+}
+
+#message_board li.system {
+	text-align: center;
+	padding: 0;
+}
+
+#message_board li.system .label {
+	display: none;
+}
+
+#message_board li.system .info {
+	padding: 0;
+	margin: 0;
+	background-color: transparent;
+}
+
+#message_board li.you {
+	text-align: right;
+}
+
+#message_board li.you .label {
+	display: none;
+}
+
+#message_board li.you .info {
+	background-color: #44a8eb;
+	margin: 0;
+	color: #fff;
 }
 
 #message_form {
@@ -104,6 +144,7 @@
 }
 
 #register_form {
+	display: none;
 	position: fixed;
 	top: 0;
 	right: 0;
@@ -166,8 +207,3 @@
 	width: 200px;
 	background-color: #242a31;
 }
-
-
-
-
-

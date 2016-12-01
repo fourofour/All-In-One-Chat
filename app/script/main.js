@@ -12,9 +12,9 @@ class Log {
 
     let span2, text2;
 
-    if(data.username) {
+    if(data.label) {
       span2 = document.createElement('span');
-      text2 = document.createTextNode(data.username);
+      text2 = document.createTextNode(data.label);
 
       span2.classList.add('label')
 
@@ -103,7 +103,7 @@ class Client {
     this.event = {
       poke(event) {
         event.preventDefault();
-        
+
         let data = {
           username : config.get('username'),
           target : {
@@ -127,6 +127,7 @@ let elements = new Map();
 // Keep all clinet configs
 let config = new Map();
 
+// Collection and assign all necessary DOM elements to prevent using global namespace on window object
 elements.set('message_form', document['message_form']);
 elements.set('message_input', document['message_form']['message_input']);
 elements.set('register_form', document['register_form']);
@@ -137,6 +138,7 @@ elements.set('online_list', document.getElementById('online_list'));
 let socket = io();
 let log = new Log(elements.get('message_board'), elements.get('online_list'));
 
+// Register Nickname event handler - submit on form
 elements.get('register_form').addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -148,6 +150,7 @@ elements.get('register_form').addEventListener('submit', function(event) {
   input.value = '';
 });
 
+// Sending message event handler - submit on form
 elements.get('message_form').addEventListener('submit', function(event) {
   event.preventDefault();
   
@@ -228,12 +231,12 @@ socket.on('update:list', function(list) {
 });
 
 socket.on('new:poke', function(info) {
-  let data = {
-    username: info.username,
+  let option = {
+    label: info.username,
     message: 'I Poked you dude!'
   };
 
-  log.message(data);
+  log.message(option);
 });
 // end of sockets
 
