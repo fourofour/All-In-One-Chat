@@ -38,8 +38,10 @@ class Log {
     for(let i=0; i < list.length; i++) {
       let element = document.createElement('li'),
           span1 = document.createElement('span'),
-          text1 = document.createTextNode(list[i]);
+          text1 = document.createTextNode(list[i][1]);
 
+      span1.setAttribute('data-socket-id', list[i][0]);
+      span1.addEventListener('click', client.event.poke);
       span1.appendChild(text1);
       element.appendChild(span1);
 
@@ -48,7 +50,7 @@ class Log {
   }
 }
 
-// Setting up a class to controll our client behavior
+// Setting up a class to control our client behavior
 class Client {
   constructor() {
     let client = this;
@@ -89,6 +91,20 @@ class Client {
         client.hide.register();
       }
     };
+
+    this.event = {
+      poke(event) {
+        let data = {
+          username : config.get('username'),
+          target : {
+            username: this.innerHTML,
+            id: this.getAttribute('data-socket-id')
+          }
+        };
+
+        socket.emit('new:poke', data);
+      }
+    }
   }
 }
 
@@ -117,7 +133,7 @@ elements.get('register_form').addEventListener('submit', function(event) {
   let input = elements.get('register_input');
   
   if(input.value.length > 0 && config.get('connected'))
-    socket.emit('register:username', input.value); 
+    socket.emit('register:username', input.value);
 
   input.value = '';
 });
@@ -127,9 +143,8 @@ elements.get('message_form').addEventListener('submit', function(event) {
   
   let input = elements.get('message_input');
   
-  if(input.value.length > 0 && config.get('connected')) {
+  if(input.value.length > 0 && config.get('connected'))
     socket.emit('new:message', input.value);
-  }
 
   input.value = '';
 });
@@ -200,6 +215,15 @@ socket.on('register:username', function(username) {
 
 socket.on('update:list', function(list) {
   log.list(list);
+});
+
+socket.on('new:poke', function(info) {
+  let data = {
+    username: info.username,
+    message: 'I Poked you dude!'
+  };
+
+  log.message(data);
 });
 // end of sockets
 

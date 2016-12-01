@@ -36,12 +36,38 @@ io.on('connection', function(socket) {
 
     io.to(socket.id).emit('register:username', username);
 
-    let list = [...config.onlines];
-    list = list.map(function(currentValue, index, array) {
-      return currentValue[1];
-    });
+    // Need to send socket.id for poke, just for now
+    // let list = [...config.onlines];
+    
+    // list = list.map(function(currentValue, index, array) {
+    //   return currentValue[1];
+    // });
 
-    io.emit('update:list', list);
+    // io.emit('update:list', list);
+
+    io.emit('update:list', [...config.onlines]);
+  });
+
+  socket.on('new:poke', function(data) {
+    if(socket.id !== data.target.id) { // to prevent poking themself
+      let username = config.onlines.get(socket.id),
+          targetUsername = config.onlines.get(data.target.id);
+
+      let info = {
+        username,
+        id: socket.id
+      };
+
+      let confirm = {
+        username,
+        message: ' You poked ' + targetUsername
+      };
+
+      if(username === data.username && targetUsername === data.target.username) {
+        io.to(data.target.id).emit('new:poke', info)
+        io.to(socket.id).emit('new:message', confirm);
+      }
+    }
   });
 });
 

@@ -8,43 +8,50 @@
  	position: fixed;
     top: 0;
     right: 200px;
-    left: 0;
-    bottom: 50px;
-    background-color: rgba(0,0,0 , 0.25);
+    left: 200px;
+    bottom: 80px;
     padding: 0;
     margin: 0;
     overflow: auto;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f3f7fa+0,ebedf2+100 */
+	background: #f3f7fa; /* Old browsers */
+	background: -moz-linear-gradient(left, #f3f7fa 0%, #ebedf2 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left, #f3f7fa 0%,#ebedf2 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right, #f3f7fa 0%,#ebedf2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f7fa', endColorstr='#ebedf2',GradientType=1 ); /* IE6-9 */
 }
 
 #message_board li {
 	list-style-type: none;
 	display: block;
-    padding: 10px;
-    margin: 0;
-}
-
-#message_board li:nth-child(2n+1) {
-	background-color: rgba(0, 0, 0, 0.125);
+	padding: 0;
+    margin: 10px;
+    color: #7c7d7f;
 }
 
 #message_board li > * {
 	display: inline-block;
+    padding: 20px;
+    background-color: #fff;
 }
 
 #message_board li .label {
 	font-weight: bold;
 	margin-right: 10px;
+	border-radius: 50%;
 }
 
-#message_board li .info {}
+#message_board li .info {
+	border-radius: 3px;
+}
 
 #message_form {
 	position: fixed;
 	bottom: 0;
-	left: 0;
+	left: 200px;
 	right: 200px;
-	height: 50px;
-	border-top: 1px solid rgba(0, 0, 0, 0.5);
+	height: 80px;
+	border-top: 1px solid #e0e3e2;
 }
 
 #message_form > * {
@@ -54,6 +61,7 @@
 	display: block;
 	border-style: none;
 	border-radius: 0;
+	background-color: #fefffe;
 }
 
 #message_form input {
@@ -62,6 +70,7 @@
 	width: 90%;
 	height: 100%;
 	padding: 10px;
+	color: #737373;
 }
 
 #message_form button {
@@ -78,8 +87,18 @@
 	right: 0;
 	width: 200px;
 	bottom: 0;
-	border-left: 1px solid rgba(0, 0, 0, 0.5);
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	display: block;
+	list-style-type: none;
+}
+
+#online_list li {
+	padding: 5px;
+}
+
+#online_list li span {
+	cursor: pointer;
+	display: inline-block;
 }
 
 #register_form {
@@ -95,29 +114,24 @@
 	position: absolute;
 	top: 50%;
 	right: 50%;
-	width: 200px;
-	margin-right: -50px;
+	width: 300px;
+	margin-right: -150px;
 	margin-top: -50px;
 }
 
 #register_form .inner_layer > * {
-	width: 100%;
 	display: block;
-}
-
-#register_form .inner_layer .label {
-	color: #fff;
-	text-align: center;
-	margin-bottom: 10px;
 }
 
 #register_form .inner_layer input {
 	margin-bottom: 10px;
-	background-color: #ecf0f1;
-	color: #000;
+	background-color: transparent;
+	color: #070707;
 	border-style: none;
 	border-radius: 4px;
 	padding: 10px;
+	font-size: 20px;
+	width: 100%;
 }
 
 #register_form .inner_layer button {
@@ -127,27 +141,30 @@
 	border-radius: 4px;
 	padding: 5px;
 	cursor: pointer;
+	width: 200px;
+	margin: 0 auto;
+	background-color: transparent;
+	color: #070707;
+	font-size: 18px;
 }
 
 #register_form .inner_layer button:hover {
-	background-color: #399de0;
-	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.125) inset;
+	color: #171717;
 }
 
 #register_form .inner_layer button:active {
-	background-color: #44a8eb;
-	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.125) inset,
-				0 0 3px 0 rgba(255, 255, 255, 0.25);
+	color: #373737;
 }
 
-#online_list {
-	display: block;
-	list-style-type: none;
+#chat_list {
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 200px;
+	background-color: #242a31;
 }
 
-#online_list li {
-	padding: 5px;
-}
 
 
 
