@@ -296,8 +296,10 @@ class App {
             // Native event : reconnect
             socket.on('reconnect', function () {
               config.set('connected', true);
+              
+              let username = config.get('username');
 
-              if(config.get('username'))
+              if(username)
                 socket.emit('register:username', username);
 
               let option = {
