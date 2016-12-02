@@ -137,10 +137,19 @@ body[data-state="loaded"] #register_form {
 	clear: both;
 }
 
+#online_list li.you {
+	background-color: #3498db;
+	color: #fff;
+}
+
 #online_list li .poke {
 	cursor: pointer;
 	display: inline-block;
 	float: right;
+}
+
+#online_list li.you .poke {
+	display: none;
 }
 
 #register_form {
