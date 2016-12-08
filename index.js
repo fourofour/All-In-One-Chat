@@ -20,6 +20,8 @@ io.on('connection', function(socket) {
   socket.on('disconnect', function() {
     config.onlines.delete(socket.id);
     console.log('user disconnected');
+    
+    io.emit('update:list', [...config.onlines]);
   });
 
   socket.on('new:message', function(message) {
@@ -41,21 +43,12 @@ io.on('connection', function(socket) {
     }
 
     io.to(socket.id).emit('register:username', data);
-
-    // Need to send socket.id for poke, just for now
-    // let list = [...config.onlines];
-    
-    // list = list.map(function(currentValue, index, array) {
-    //   return currentValue[1];
-    // });
-
-    // io.emit('update:list', list);
-
     io.emit('update:list', [...config.onlines]);
   });
 
   socket.on('new:poke', function(data) {
-    if(socket.id !== data.id) { // to prevent poking themself
+    // to prevent poking themself
+    if(socket.id !== data.id) {
       let username = config.onlines.get(socket.id),
           targetUsername = config.onlines.get(data.id);
 
@@ -69,7 +62,8 @@ io.on('connection', function(socket) {
         message: 'You poked ' + targetUsername
       };
 
-      if(targetUsername === data.username) { // make sure about the information
+      // make sure about the information
+      if(targetUsername === data.username) {
         io.to(data.id).emit('new:poke', option)
         io.to(socket.id).emit('new:message', option2);
       }

@@ -129,6 +129,17 @@ class App {
         }
       },
       state: {
+        /**
+        *   data-state
+        **    loaded
+        **    registred
+        **    disconnect
+        **    reconnect
+        **    reconnect_error
+        **
+        *
+        **/
+
         set(name) {
           app._client.state.active = name;
 
@@ -284,12 +295,10 @@ class App {
             socket.on('disconnect', function() {
               config.set('connected', false);
 
-              // TODO
-              // client.state.register();
+              app._client.state.set('disconnect');
 
               let option = {
                 message: 'You are disconnected!',
-                label: 'system',
                 code: '1'
               };
 
@@ -299,6 +308,8 @@ class App {
             // Native event : reconnect
             socket.on('reconnect', function () {
               config.set('connected', true);
+
+              app._client.state.set('reconnect');
 
               let username = config.get('username');
 
@@ -315,6 +326,8 @@ class App {
 
             // Native event : reconnect_error
             socket.on('reconnect_error', function () {
+              app._client.state.set('reconnect_error');
+
               let option = {
                 message: 'Attempt to reconnect has failed!',
                 code: '1'
@@ -347,7 +360,8 @@ class App {
             });
 
             socket.on('new:poke', function(option) {
-              option.message = 'I Poked you!';
+              option.message = option.label + ' poked you!';
+              option.code = 1;
 
               message(option);
             });
