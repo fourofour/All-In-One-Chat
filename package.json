@@ -4,7 +4,8 @@
   "description": "My first socket.io app",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

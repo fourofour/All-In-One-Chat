@@ -18,4 +18,4 @@ Yet another example of chat application.
 To run the test you need to run the server and have at least one tab working with app.
 
 ## Run ##
-- `node index.js` will run the server on `localhost:3000`
+- `npm start` will run the server on `localhost:3000`
