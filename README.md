@@ -23,7 +23,7 @@ To run the test you need to run the server and have at least one tab working wit
 
 ## Run ##
 - `cd nuxt`
-- `npm run dev` or `npm run build` + `npm run start` will run the server on `localhost:3000`
+- `npm run dev` or `npm run build` + `npm run start` will run the app on `localhost:3000`
 
 - `cd server`
-- `node index.js`
+- `node index.js` will run the server on `localhost:3001`
