@@ -112,6 +112,7 @@ io.on('connection', function(socket) {
 
     if (message.target) {
       io.emit(message.target.id, message)
+      io.emit(message.id, message)
     } else {
       io.emit('AddMessage', message)
     }
