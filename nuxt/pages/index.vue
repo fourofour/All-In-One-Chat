@@ -60,13 +60,13 @@
           that.socket.on(that.id, function(message) {
             console.log(message)
             console.log(that.active)
-            if ( message.type ) {
-            //  handle server private message
-            } else {
-              that.$store.dispatch({
-                type: 'chat/addMessage',
-                amount: message
-              })
+            switch (message.type) {
+              default:
+                that.$store.dispatch({
+                  type: 'chat/addMessage',
+                  amount: message
+                })
+                break
             }
           })
         }

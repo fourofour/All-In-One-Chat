@@ -104,6 +104,10 @@ io.on('connection', function(socket) {
         message.username = currentValue.username
         message.id = currentValue.id
       }
+
+      if (message.target && message.target.id === currentValue.id) {
+        message.target.username = currentValue.username
+      }
     })
 
     if (message.target) {

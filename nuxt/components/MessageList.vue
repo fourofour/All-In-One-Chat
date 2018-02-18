@@ -1,7 +1,7 @@
 <template>
   <div  id="message-list-container">
     <ul>
-      <li v-for="(item, index) in messages" :key="index" :class="{system: item.type === 'system', user: item.type === 'user'}" v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room) || (item.target && active.split(':')[1] === item.target.id)">
+      <li v-for="(item, index) in messages" :key="index" :class="{system: item.type === 'system', user: item.type === 'user'}" v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room) || (item.target && active.split(':')[1] === item.target.id) || item.type === 'system'">
         <span class="username" v-if="item.type === 'user'">
           {{ item.id === id ? 'you' :  item.username }}
         </span>
