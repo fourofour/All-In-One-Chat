@@ -21,13 +21,33 @@
         message: ''
       }
     },
+    computed: {
+      active: {
+        get: function () {
+          return this.$store.getters['chat/getActive']
+        },
+        set: function (newValue) {
+          return newValue
+        }
+      }
+    },
     methods: {
       submit: function () {
         if (this.message.length > 0) {
-          this.socket.emit('NewMessage', {
+          let data = {
             type: 'user',
             message: this.message
-          })
+          }
+
+          if (this.active.split(':')[0] === 'ROOM') {
+            data.room = this.active.split(':')[1]
+          } else {
+            data.target = {
+              id: this.active.split(':')[1]
+            }
+          }
+
+          this.socket.emit('NewMessage', data)
 
           this.message = ''
         }

@@ -11,5 +11,11 @@ export default {
         state.users.splice(index, 1)
       }
     })
+  },
+  addRooms (state, data) {
+    state.rooms.push(data)
+  },
+  setActive (state, data) {
+    state.active = data
   }
 }

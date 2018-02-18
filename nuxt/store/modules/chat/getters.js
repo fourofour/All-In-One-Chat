@@ -4,5 +4,11 @@ export default {
   },
   getUsers: state => {
     return state.users.concat()
+  },
+  getRooms: state => {
+    return state.rooms.concat()
+  },
+  getActive: state => {
+    return state.active.concat()
   }
 }

@@ -2,14 +2,16 @@
   <section id="main-container">
     <Register v-if="!loggedIn" :socket="socket"/>
     <AddMessage v-if="loggedIn" :socket="socket"/>
-    <MessageList v-if="loggedIn" :id="id"/>
+    <MessageList v-if="loggedIn && active.length > 0" :id="id"/>
     <UsersList v-if="loggedIn"/>
+    <RoomsList v-if="loggedIn"/>
   </section>
 </template>
 
 <script>
   import Register from '~/components/Register'
   import UsersList from '~/components/UsersList'
+  import RoomsList from '~/components/RoomsList'
   import AddMessage from '~/components/AddMessage'
   import MessageList from '~/components/MessageList'
 
@@ -24,8 +26,19 @@
     components: {
       Register,
       UsersList,
+      RoomsList,
       AddMessage,
       MessageList
+    },
+    computed: {
+      active: {
+        get: function () {
+          return this.$store.getters['chat/getActive']
+        },
+        set: function (newValue) {
+          return newValue
+        }
+      }
     },
     mounted: function () {
       let that = this
@@ -44,12 +57,17 @@
           that.id = that.socket.id
           that.loggedIn = true
 
-
           that.socket.on(that.id, function(message) {
-            that.$store.dispatch({
-              type: 'chat/addMessage',
-              amount: message
-            })
+            console.log(message)
+            console.log(that.active)
+            if ( message.type ) {
+            //  handle server private message
+            } else {
+              that.$store.dispatch({
+                type: 'chat/addMessage',
+                amount: message
+              })
+            }
           })
         }
       })
@@ -71,6 +89,7 @@
     beforeDestroy: function () {
       this.socket.removeListener('AddMessage')
       this.socket.removeListener('NewUser')
+      this.socket.removeListener('RemoveUser')
       this.socket.removeListener(this.id)
     }
   }

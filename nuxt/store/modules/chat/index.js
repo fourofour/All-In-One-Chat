@@ -4,7 +4,9 @@ import mutations from './mutations'
 
 const state = {
   messages: [],
-  users: []
+  users: [],
+  rooms: [],
+  active: ''
 }
 
 export default {

@@ -7,5 +7,11 @@ export default {
   },
   removeUsers (context, data) {
     context.commit('removeUsers', data.amount)
+  },
+  addRooms (context, data) {
+    context.commit('addRooms', data.amount)
+  },
+  setActive (context, data) {
+    context.commit('setActive', data.amount)
   }
 }
