@@ -35,7 +35,7 @@
   #message-list-container {
     position: fixed;
     top: 0;
-    right: 0;
+    right: 200px;
     left: 0;
     bottom: 43px;
   }

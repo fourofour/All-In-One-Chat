@@ -27,6 +27,7 @@ io.on('connection', function(socket) {
         }
 
         io.emit('NewUser', message)
+
         io.emit('AddMessage', {
           type: 'system',
           message: clients[index].username + ' joined the chat'
@@ -36,6 +37,11 @@ io.on('connection', function(socket) {
           type: 'system',
           message: 'Welcome ' + clients[index].username
         })
+
+        io.emit('AddUser', {
+          username: clients[index].username,
+          id: clients[index].id
+        })
       }
     })
   })
@@ -44,6 +50,17 @@ io.on('connection', function(socket) {
     clients.forEach(function (currentValue, index, array) {
       if (currentValue.id === socket.id) {
         console.log(currentValue.username + ' disconnected')
+
+        io.emit('RemoveUser', {
+          username: clients[index].username,
+          id: clients[index].id
+        })
+
+        io.emit('AddMessage', {
+          type: 'system',
+          message: clients[index].username + ' left the chat'
+        })
+
         clients.splice(index, 1)
       }
     })

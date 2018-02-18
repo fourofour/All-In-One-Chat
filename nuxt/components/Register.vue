@@ -2,7 +2,6 @@
   <div id="register-container">
     <form @submit.prevent="submit">
       <input v-model="username" type="text" placeholder="Your name...">
-      <!--<input type="submit" value="Enter">-->
     </form>
   </div>
 </template>

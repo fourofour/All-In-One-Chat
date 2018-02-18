@@ -3,11 +3,13 @@
     <Register v-if="!loggedIn" :socket="socket"/>
     <AddMessage v-if="loggedIn" :socket="socket"/>
     <MessageList v-if="loggedIn" :id="id"/>
+    <UsersList v-if="loggedIn"/>
   </section>
 </template>
 
 <script>
   import Register from '~/components/Register'
+  import UsersList from '~/components/UsersList'
   import AddMessage from '~/components/AddMessage'
   import MessageList from '~/components/MessageList'
 
@@ -21,6 +23,7 @@
     },
     components: {
       Register,
+      UsersList,
       AddMessage,
       MessageList
     },
@@ -49,6 +52,20 @@
             })
           })
         }
+      })
+
+      this.socket.on('AddUser', function(message) {
+        that.$store.dispatch({
+          type: 'chat/addUsers',
+          amount: message
+        })
+      })
+
+      this.socket.on('RemoveUser', function(message) {
+        that.$store.dispatch({
+          type: 'chat/removeUsers',
+          amount: message
+        })
       })
     },
     beforeDestroy: function () {
