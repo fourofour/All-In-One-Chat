@@ -32,9 +32,10 @@ To run the test you need to run the server and have at least one tab working wit
 ## Road Map ##
 
 - Finish the server
-- NuxtJs
-- VueJs
-- AngularJs
-- ReactJs
-- Javascript Native
-- jQuery
+- versions
+    - NuxtJs
+    - VueJs
+    - AngularJs
+    - ReactJs
+    - Javascript Native
+    - jQuery
