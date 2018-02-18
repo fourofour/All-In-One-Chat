@@ -27,3 +27,14 @@ To run the test you need to run the server and have at least one tab working wit
 
 - `cd server`
 - `npm start` will run the server on `localhost:3001`
+
+
+## Road Map ##
+
+- Finish the server
+- NuxtJs
+- VueJs
+- AngularJs
+- ReactJs
+- Javascript Native
+- jQuery
