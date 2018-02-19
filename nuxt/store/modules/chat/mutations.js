@@ -24,5 +24,12 @@ export default {
   },
   setActive (state, data) {
     state.active = data
+  },
+  setSocket (state, data) {
+    if (state.socket && state.socket.close) {
+      state.socket.close()
+    }
+
+    state.socket = data
   }
 }

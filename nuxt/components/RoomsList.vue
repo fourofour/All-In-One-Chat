@@ -11,7 +11,8 @@
 <script>
   export default {
     props: [
-      'socket'
+      'socket',
+      'RoomSocket'
     ],
     computed: {
       rooms: {
@@ -21,6 +22,15 @@
         set: function (newValue) {
           return newValue
         }
+      }
+    },
+    watch: {
+      RoomSocket (v) {
+        v.removeListener('AddMessage')
+
+        v.on('AddMessage', function (message) {
+          console.log(message)
+        })
       }
     },
     methods: {
@@ -36,6 +46,11 @@
 
         this.socket.emit('JoinRoom', {
           key: name
+        })
+
+        this.$store.dispatch({
+          type: 'chat/setSocket',
+          amount: io('http://localhost:3001' + name)
         })
       }
     }

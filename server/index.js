@@ -47,17 +47,18 @@ var io = require('socket.io')(http, {
 
 let clients = []
 let rooms = new Map([
-  ['Global', io.of('/Global')],
-  ['Server', io.of('/Server')]
+  ['/Global', io.of('/Global')],
+  ['/Server', io.of('/Server')]
 ])
 
 let createRoom = function (RoomKey) {
-  rooms.set(RoomKey, io.of('/' + RoomKey))
+  rooms.set(RoomKey, io.of(RoomKey))
 
   rooms.get(RoomKey).on('join', function (socket) {
     let { client } = getClientInfo(socket.id)
+    console.log(socket.id)
 
-    io.of(RoomKey).emit('AddMessage', {
+    rooms.get(RoomKey).of(RoomKey).emit('AddMessage', {
       type: 'SERVER_MESSAGE',
       message: client.username + ' has joined the room',
       room: {
@@ -69,7 +70,7 @@ let createRoom = function (RoomKey) {
   rooms.get(RoomKey).on('leave', function (socket) {
     let { client } = getClientInfo(socket.id)
 
-    io.of(RoomKey).emit('AddMessage', {
+    rooms.get(RoomKey).of(RoomKey).emit('AddMessage', {
       type: 'SERVER_MESSAGE',
       message: client.username + ' has left the room',
       room: {

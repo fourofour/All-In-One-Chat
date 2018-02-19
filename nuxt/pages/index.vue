@@ -4,7 +4,7 @@
     <AddMessage v-if="loggedIn" :socket="socket"/>
     <MessageList v-if="loggedIn && active.length > 0" :id="id"/>
     <UsersList v-if="loggedIn" :id="id"/>
-    <RoomsList v-if="loggedIn" :socket="socket"/>
+    <RoomsList v-if="loggedIn" :socket="socket" :RoomSocket="RoomSocket"/>
   </section>
 </template>
 
@@ -34,6 +34,14 @@
       active: {
         get: function () {
           return this.$store.getters['chat/getActive']
+        },
+        set: function (newValue) {
+          return newValue
+        }
+      },
+      RoomSocket: {
+        get: function () {
+          return this.$store.getters['chat/getSocket']
         },
         set: function (newValue) {
           return newValue

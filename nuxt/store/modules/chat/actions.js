@@ -66,5 +66,8 @@ export default {
     socket.emit('LeaveRoom', {
       key: name
     })
+  },
+  setSocket (context, data) {
+    context.commit('setSocket', data.amount)
   }
 }

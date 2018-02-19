@@ -9,9 +9,9 @@ export default {
     return state.rooms.concat()
   },
   getActive: state => {
-    return state.active.concat()
+    return state.active.substring(0, state.active.length)
   },
-  getSockets: state => {
-    return state.sockets.concat()
+  getSocket: state => {
+    return state.socket
   }
 }
