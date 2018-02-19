@@ -1,8 +1,8 @@
 <template>
   <div id="rooms-list-container">
     <ul>
-      <li v-for="(item, index) in rooms" :key="index" :data-id="item.name" @click.prevent="setActive(item.name)">
-        {{ item.name }}
+      <li v-for="(item, index) in rooms" :key="index" :data-id="item.name" @click.prevent="setActive(item.key)">
+        {{ item.key }}
       </li>
     </ul>
   </div>

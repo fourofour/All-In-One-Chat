@@ -1,7 +1,7 @@
 <template>
   <div id="users-list-container">
     <ul>
-      <li v-for="(item, index) in users" :key="index" :data-id="item.id" @click.prevent="setActive(item.id)">
+      <li v-for="(item, index) in users" :key="index" :data-id="item.id" @click.prevent="setActive(item.id)" v-if="item.username && item.username.length > 0">
         {{ item.username }}
       </li>
     </ul>

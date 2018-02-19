@@ -1,13 +1,99 @@
+/*
+* user
+*   {
+*     username: username (String)
+*     id: id (String)
+*   }
+* */
+
+/*
+* room
+*   {
+*     key: key (String)
+*   }
+*
+* */
+
+/*
+* message
+*  {
+*     type: USER_MESSAGE | SERVER_MESSAGE ! SYSTEM_INIT (String),
+*     id: userId (String),
+*     username: username (String),
+*     message: message (String),
+*     room: key (String),
+*     target: {
+*       id: userId (String),
+*       username: username (String)
+*     },
+*     data: {
+*       users: clients (Array),
+*       rooms: roomsList (Array),
+*       client: client (Object)
+*     }
+*  }
+*
+* */
+
 var app = require('express')()
 var http = require('http').Server(app)
-var io = require('socket.io')(http)
+var io = require('socket.io')(http, {
+  serveClient: false,
+  // below are engine.IO options
+  pingInterval: 10000,
+  pingTimeout: 5000,
+  cookie: false
+})
 
 let clients = []
-let rooms = [
-  {
-    name: 'global'
-  }
-]
+let rooms = new Map([['global', io.of('/global')], ['server', io.of('/server')]])
+
+let createRoom = function (RoomKey) {
+  rooms.set(RoomKey, io.of(RoomKey))
+
+  rooms.get(RoomKey).on('connect', function (socket) {
+    let { client } = getClientInfo(socket.id)
+
+    io.of(RoomKey).emit('AddMessage', {
+      type: 'SERVER_MESSAGE',
+      message: client.username + ' has joined the room',
+      room: {
+        key: RoomKey
+      }
+    })
+  })
+
+  rooms.get(RoomKey).on('disconnect', function (socket) {
+    let { client } = getClientInfo(socket.id)
+
+    io.of(RoomKey).emit('AddMessage', {
+      type: 'SERVER_MESSAGE',
+      message: client.username + ' has left the room',
+      room: {
+        key: RoomKey
+      }
+    })
+  })
+}
+
+let getClientInfo = function (SocketId) {
+  let item
+
+  clients.forEach(function (value, index, array) {
+    if (value.id === SocketId) {
+      item = {
+        client: value,
+        index
+      }
+    }
+  })
+
+  return item
+}
+
+rooms.forEach(function (value, key, map) {
+  createRoom(key)
+})
 
 io.on('connection', function(socket) {
   clients.push({
@@ -16,126 +102,92 @@ io.on('connection', function(socket) {
 
   console.log('a user connected')
 
-  /*
-  * user
-  *   {
-  *     username: username (String)
-  *   }
-  * */
   socket.on('NewUser', function(user) {
-    clients.forEach(function (currentValue, index, array) {
-      if (currentValue.id === socket.id) {
-        clients[index].username = user.username
+    let { client, index } = getClientInfo(socket.id)
 
-        user.target = {
-          id: clients[index].id
-        }
+    clients[index].username = user.username
 
-        io.emit('NewUser', user)
+    let roomsList = []
 
-        io.emit('AddMessage', {
-          type: 'system',
-          message: clients[index].username + ' joined the chat'
-        })
+    rooms.forEach(function (value, key, map) {
+      roomsList.push({ key })
+    })
 
-        io.emit(socket.id, {
-          type: 'system',
-          message: 'Welcome ' + clients[index].username
-        })
-
-        io.emit('AddUser', {
-          username: clients[index].username,
-          id: clients[index].id
-        })
+    io.emit(socket.id, {
+      type: 'SYSTEM_INIT',
+      data: {
+        users: clients,
+        rooms: roomsList,
+        client
       }
+    })
+
+    io.emit('NewUser', client)
+  })
+
+  socket.on('JoinRoom', function(room) {
+    socket.join(room.key)
+
+    io.emit('JoinRoom', {
+      type: 'SYSTEM_JOIN_ROOM',
+      room
     })
   })
 
-  /*
-  * room
-  *   {
-  *     name: name (String)
-  *   }
-  *
-  * */
-  socket.on('AddRoom', function(room) {
+  socket.on('LeaveRoom', function(room) {
+    socket.leave(room.key)
+
+    io.emit('LeaveRoom', {
+      type: 'SYSTEM_LEAVE_ROOM',
+      room
+    })
+  })
+
+  socket.on('CreateRoom', function(room) {
     let exist = false
 
-    rooms.forEach(function (currentValue, index, array) {
-      if (currentValue.name === room.name) {
+    rooms.forEach(function (value, index, array) {
+      if (value.name === room.name) {
         exist = true
       }
     })
 
     if (!exist) {
-      rooms.push(room)
-
-      io.emit('AddRoom', {
-        type: 'rooms',
-        room: room
-      })
-    } else {
-      io.emit(socket.id, {
-        type: 'AddRoom',
-        value: false
-      })
+      createRoom(room.key)
     }
   })
 
-  /*
-  * message
-  *  {
-  *     type: user | system (String),
-  *     id: userId (String),
-  *     username: username (String),
-  *     message: message (String),
-  *     room: roomName (String),
-  *     target: {
-  *       id: userId (String),
-  *       username: username (String)
-  *     }
-  *  }
-  *
-  * */
-
   socket.on('NewMessage', function(message) {
-    clients.forEach(function (currentValue, index, array) {
-      if (currentValue.id === socket.id) {
-        message.username = currentValue.username
-        message.id = currentValue.id
+    let { client } = getClientInfo(socket.id)
+
+    message.username = client.username
+    message.id = client.id
+
+    if (message.target && message.target.id === client.id) {
+      message.target.username = client.username
+    }
+
+    if (message.room) {
+      rooms.get(message.room).emit('NewMessage', message)
+    } else if (message.target) {
+      if (message.target.id !== message.id) {
+        io.emit(message.target.id, message)
       }
 
-      if (message.target && message.target.id === currentValue.id) {
-        message.target.username = currentValue.username
-      }
-    })
-
-    if (message.target) {
-      io.emit(message.target.id, message)
       io.emit(message.id, message)
     } else {
       io.emit('AddMessage', message)
     }
   })
 
-  socket.on('disconnect', function() {
-    clients.forEach(function (currentValue, index, array) {
-      if (currentValue.id === socket.id) {
-        console.log(currentValue.username + ' disconnected')
+  socket.on('disconnecting', function() {
+    let { client, index } = getClientInfo(socket.id)
 
-        io.emit('RemoveUser', {
-          username: clients[index].username,
-          id: clients[index].id
-        })
+    console.log(client.username + ' disconnected')
 
-        io.emit('AddMessage', {
-          type: 'system',
-          message: clients[index].username + ' left the chat'
-        })
+    io.emit('RemoveUser', client)
 
-        clients.splice(index, 1)
-      }
-    })
+    clients.splice(index, 1)
   })
 })
 

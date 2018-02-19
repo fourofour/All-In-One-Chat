@@ -12,6 +12,13 @@ export default {
       }
     })
   },
+  updateUsers (state, data) {
+    state.users.forEach(function (currentValue, index, array) {
+      if (data.id === currentValue.id) {
+        state.users.splice(index, 1, data)
+      }
+    })
+  },
   addRooms (state, data) {
     state.rooms.push(data)
   },

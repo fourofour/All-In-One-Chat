@@ -45,31 +45,44 @@
 
       this.socket = io('http://localhost:3001')
 
+      this.socket.on('connect', function () {
+        that.socket.on(that.socket.id, function(message) {
+          that.id = that.socket.id
+          that.loggedIn = true
+
+          switch (message.type) {
+            case 'SYSTEM_INIT':
+              that.$store.dispatch({
+                type: 'chat/setRooms',
+                amount: message.data.rooms
+              })
+              that.$store.dispatch({
+                type: 'chat/setUsers',
+                amount: message.data.users
+              })
+              break
+            default:
+              that.$store.dispatch({
+                type: 'chat/addMessage',
+                amount: message
+              })
+              break
+          }
+        })
+      })
+
+      this.socket.on('NewUser', function(client) {
+        that.$store.dispatch({
+          type: 'chat/addUsers',
+          amount: client
+        })
+      })
+
       this.socket.on('AddMessage', function(message) {
         that.$store.dispatch({
           type: 'chat/addMessage',
           amount: message
         })
-      })
-
-      this.socket.on('NewUser', function(message) {
-        if (message.target.id === that.socket.id) {
-          that.id = that.socket.id
-          that.loggedIn = true
-
-          that.socket.on(that.id, function(message) {
-            console.log(message)
-            console.log(that.active)
-            switch (message.type) {
-              default:
-                that.$store.dispatch({
-                  type: 'chat/addMessage',
-                  amount: message
-                })
-                break
-            }
-          })
-        }
       })
 
       this.socket.on('AddUser', function(message) {
@@ -89,6 +102,7 @@
     beforeDestroy: function () {
       this.socket.removeListener('AddMessage')
       this.socket.removeListener('NewUser')
+      this.socket.removeListener('AddUser')
       this.socket.removeListener('RemoveUser')
       this.socket.removeListener(this.id)
     }
