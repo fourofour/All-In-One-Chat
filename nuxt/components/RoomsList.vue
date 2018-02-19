@@ -27,7 +27,15 @@
       setActive: function (name) {
         this.$store.dispatch({
           type: 'chat/setActive',
-          amount: 'ROOM:' + name
+          amount: {
+            value: 'ROOM:' + name,
+            socket: this.socket,
+            name
+          }
+        })
+
+        this.socket.emit('JoinRoom', {
+          key: name
         })
       }
     }

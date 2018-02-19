@@ -10,5 +10,8 @@ export default {
   },
   getActive: state => {
     return state.active.concat()
+  },
+  getSockets: state => {
+    return state.sockets.concat()
   }
 }

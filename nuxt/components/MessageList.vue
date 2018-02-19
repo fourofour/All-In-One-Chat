@@ -1,7 +1,17 @@
 <template>
   <div  id="message-list-container">
+    <div>
+      {{ active.split(':')[0] === 'USER' ? 'User: ' : 'Room: ' }}
+      {{ active.split(':')[0] === 'USER' ? getUsername(active.split(':')[1]) : active.split(':')[1] }}
+    </div>
     <ul>
-      <li v-for="(item, index) in messages" :key="index" :class="{system: item.type === 'system', user: item.type === 'user'}" v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room) || (item.target && active.split(':')[1] === item.target.id) || (active.split(':')[1] === item.id) || item.type === 'system'">
+      <li
+        v-for="(item, index) in messages"
+        :key="index"
+        :class="{system: item.type === 'SERVER_MESSAGE', user: item.type === 'USER_MESSAGE'}"
+        v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room) || (item.target && active.split(':')[1] === item.target.id) || (active.split(':')[1] === item.id) || item.type === 'SERVER_MESSAGE'"
+        >
+
         <span class="username" v-if="item.type === 'user'">
           {{ item.id === id ? 'you' :  item.username }}
         </span>
@@ -34,6 +44,27 @@
         set: function (newValue) {
           return newValue
         }
+      },
+      users: {
+        get: function () {
+          return this.$store.getters['chat/getUsers']
+        },
+        set: function (newValue) {
+          return newValue
+        }
+      }
+    },
+    methods: {
+      getUsername: function (id) {
+        let username = ''
+
+        this.users.forEach(function (value, index, array) {
+          if (value.id === id) {
+            username = value.username
+          }
+        })
+
+        return username
       }
     }
   }

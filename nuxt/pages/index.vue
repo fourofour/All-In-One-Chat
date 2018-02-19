@@ -3,8 +3,8 @@
     <Register v-if="!loggedIn" :socket="socket"/>
     <AddMessage v-if="loggedIn" :socket="socket"/>
     <MessageList v-if="loggedIn && active.length > 0" :id="id"/>
-    <UsersList v-if="loggedIn"/>
-    <RoomsList v-if="loggedIn"/>
+    <UsersList v-if="loggedIn" :id="id"/>
+    <RoomsList v-if="loggedIn" :socket="socket"/>
   </section>
 </template>
 
@@ -79,6 +79,7 @@
       })
 
       this.socket.on('AddMessage', function(message) {
+        console.log(message)
         that.$store.dispatch({
           type: 'chat/addMessage',
           amount: message

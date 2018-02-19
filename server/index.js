@@ -46,7 +46,10 @@ var io = require('socket.io')(http, {
 })
 
 let clients = []
-let rooms = new Map([['global', io.of('/global')], ['server', io.of('/server')]])
+let rooms = new Map([
+  ['Global', io.of('/global')],
+  ['Server', io.of('/server')]
+])
 
 let createRoom = function (RoomKey) {
   rooms.set(RoomKey, io.of(RoomKey))

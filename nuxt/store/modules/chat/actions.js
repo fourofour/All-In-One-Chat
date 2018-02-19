@@ -60,7 +60,11 @@ export default {
       }
     })
   },
-  setActive (context, data) {
-    context.commit('setActive', data.amount)
+  setActive (context, {amount: { value, socket, name}}) {
+    context.commit('setActive', value)
+
+    socket.emit('LeaveRoom', {
+      key: name
+    })
   }
 }

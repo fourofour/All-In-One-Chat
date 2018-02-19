@@ -1,8 +1,14 @@
 <template>
   <div id="users-list-container">
     <ul>
-      <li v-for="(item, index) in users" :key="index" :data-id="item.id" @click.prevent="setActive(item.id)" v-if="item.username && item.username.length > 0">
-        {{ item.username }}
+      <li
+        v-for="(item, index) in users"
+        :key="index"
+        @click.prevent="setActive(item.id)"
+        v-if="item.username && item.username.length > 0"
+        >
+
+        {{ item.id !== id ? item.username : 'You' }}
       </li>
     </ul>
   </div>
@@ -11,7 +17,8 @@
 <script>
   export default {
     props: [
-      'socket'
+      'socket',
+      'id'
     ],
     computed: {
       users: {
@@ -24,11 +31,18 @@
       }
     },
     methods: {
-      setActive: function (id) {
-        this.$store.dispatch({
-          type: 'chat/setActive',
-          amount: 'USER:' + id
-        })
+      setActive: function (userId) {
+        if ( userId !== this.id ) {
+          this.$store.dispatch({
+            type: 'chat/setActive',
+            amount: 'USER:' + userId
+          })
+        } else {
+          this.$store.dispatch({
+            type: 'chat/setActive',
+            amount: ''
+          })
+        }
       }
     }
   }
