@@ -53,33 +53,8 @@
 
       this.socket = io('http://localhost:3001')
 
-      this.socket.on('connect', function () {
-        that.socket.on(that.socket.id, function(message) {
-          that.id = that.socket.id
-          that.loggedIn = true
-
-          switch (message.type) {
-            case 'SYSTEM_INIT':
-              that.$store.dispatch({
-                type: 'chat/setRooms',
-                amount: message.data.rooms
-              })
-              that.$store.dispatch({
-                type: 'chat/setUsers',
-                amount: message.data.users
-              })
-              break
-            default:
-              that.$store.dispatch({
-                type: 'chat/addMessage',
-                amount: message
-              })
-              break
-          }
-        })
-      })
-
       this.socket.on('NewUser', function(client) {
+        console.log(client)
         that.$store.dispatch({
           type: 'chat/addUsers',
           amount: client
@@ -88,10 +63,27 @@
 
       this.socket.on('AddMessage', function(message) {
         console.log(message)
-        that.$store.dispatch({
-          type: 'chat/addMessage',
-          amount: message
-        })
+        that.id = that.socket.id
+        that.loggedIn = true
+
+        switch (message.type) {
+          case 'SYSTEM_INIT':
+            that.$store.dispatch({
+              type: 'chat/setRooms',
+              amount: message.data.rooms
+            })
+            that.$store.dispatch({
+              type: 'chat/setUsers',
+              amount: message.data.users
+            })
+            break
+          default:
+            that.$store.dispatch({
+              type: 'chat/addMessage',
+              amount: message
+            })
+            break
+        }
       })
 
       this.socket.on('AddUser', function(message) {

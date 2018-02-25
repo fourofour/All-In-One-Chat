@@ -1,8 +1,9 @@
 /*
 * user
 *   {
-*     username: username (String)
-*     id: id (String)
+*     username: username (String),
+*     id: id (String),
+*     connection: Object (Object)
 *   }
 * */
 
@@ -53,10 +54,6 @@ let rooms = new Map([
 
 let createRoom = function (RoomKey) {
   rooms.set(RoomKey, io.to('/' + RoomKey))
-
-  rooms.get(RoomKey).on('NewMessage', function (message) {
-    console.log(message)
-  })
 }
 
 let getClientInfo = function (SocketId) {
@@ -96,12 +93,15 @@ io.on('connection', function(socket) {
       roomsList.push({ key })
     })
 
-    io.emit(socket.id, {
+    socket.emit('AddMessage', {
       type: 'SYSTEM_INIT',
       data: {
         users: clients,
         rooms: roomsList,
-        client
+        client: {
+          id: client.id,
+          username: client.username
+        }
       }
     })
 
@@ -109,7 +109,6 @@ io.on('connection', function(socket) {
   })
 
   socket.on('JoinRoom', function(room) {
-    console.log('JoinRoom ' + socket.id)
     let { client } = getClientInfo(socket.id)
 
     socket.join(room.key)
@@ -124,7 +123,6 @@ io.on('connection', function(socket) {
   })
 
   socket.on('LeaveRoom', function(room) {
-    console.log('LeaveRoom ' + socket.id)
     let { client } = getClientInfo(socket.id)
 
     socket.leave(room.key)
@@ -153,7 +151,6 @@ io.on('connection', function(socket) {
   })
 
   socket.on('NewMessage', function(message) {
-    console.log(message)
     let { client } = getClientInfo(socket.id)
 
     message.username = client.username
@@ -167,7 +164,7 @@ io.on('connection', function(socket) {
       rooms.get(message.room.key).emit('AddMessage', message)
     } else if (message.target) {
       if (message.target.id !== message.id) {
-        io.emit(message.target.id, message)
+        io.clients().sockets[message.target.id].emit('AddMessage', message)
       }
 
       io.emit(message.id, message)
@@ -177,7 +174,6 @@ io.on('connection', function(socket) {
   })
 
   socket.on('disconnect', function() {
-    console.log('disconnect')
     let { client, index } = getClientInfo(socket.id)
 
     console.log(client.username + ' disconnected')
