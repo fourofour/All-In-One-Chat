@@ -9,7 +9,7 @@
         v-for="(item, index) in messages"
         :key="index"
         :class="{system: item.type === 'SERVER_MESSAGE', user: item.type === 'USER_MESSAGE'}"
-        v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room) || (item.target && active.split(':')[1] === item.target.id) || (active.split(':')[1] === item.id) || item.type === 'SERVER_MESSAGE'"
+        v-if="(active.split(':')[0] === 'ROOM' && active.split(':')[1] === item.room.key) || (item.target && active.split(':')[1] === item.target.id) || (active.split(':')[1] === item.id) || item.type === 'SERVER_FORCE_MESSAGE'"
         >
 
         <span class="username" v-if="item.type === 'user'">
@@ -77,6 +77,7 @@
     right: 400px;
     left: 0;
     bottom: 43px;
+    overflow: auto;
   }
   #message-list-container ul {
     list-style-type: none;

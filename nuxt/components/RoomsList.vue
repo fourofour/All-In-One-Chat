@@ -1,7 +1,13 @@
 <template>
   <div id="rooms-list-container">
     <ul>
-      <li v-for="(item, index) in rooms" :key="index" :data-id="item.name" @click.prevent="setActive(item.key)">
+      <li
+        v-for="(item, index) in rooms"
+        :key="index"
+        :data-id="item.name"
+        @click.prevent="setActive(item.key)"
+        >
+
         {{ item.key }}
       </li>
     </ul>
@@ -22,6 +28,14 @@
         set: function (newValue) {
           return newValue
         }
+      },
+      active: {
+        get: function () {
+          return this.$store.getters['chat/getActive']
+        },
+        set: function (newValue) {
+          return newValue
+        }
       }
     },
     watch: {
@@ -35,6 +49,16 @@
     },
     methods: {
       setActive: function (name) {
+        if (this.active.split(':')[0] === 'ROOM') {
+          this.socket.emit('LeaveRoom', {
+            key: this.active.split(':')[1]
+          })
+
+          this.socket.emit('JoinRoom', {
+            key: name
+          })
+        }
+
         this.$store.dispatch({
           type: 'chat/setActive',
           amount: {
@@ -42,15 +66,6 @@
             socket: this.socket,
             name
           }
-        })
-
-        this.socket.emit('JoinRoom', {
-          key: name
-        })
-
-        this.$store.dispatch({
-          type: 'chat/setSocket',
-          amount: io('http://localhost:3001' + name)
         })
       }
     }

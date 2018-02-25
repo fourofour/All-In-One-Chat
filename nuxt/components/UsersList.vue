@@ -8,7 +8,7 @@
         v-if="item.username && item.username.length > 0"
         >
 
-        {{ item.id !== id ? item.username : 'You' }}
+        {{ item.id !== id ? item.username : 'You (' + item.username + ')' }}
       </li>
     </ul>
   </div>
@@ -28,21 +28,28 @@
         set: function (newValue) {
           return newValue
         }
+      },
+      active: {
+        get: function () {
+          return this.$store.getters['chat/getActive']
+        },
+        set: function (newValue) {
+          return newValue
+        }
       }
     },
     methods: {
       setActive: function (userId) {
-        if ( userId !== this.id ) {
-          this.$store.dispatch({
-            type: 'chat/setActive',
-            amount: 'USER:' + userId
-          })
-        } else {
-          this.$store.dispatch({
-            type: 'chat/setActive',
-            amount: ''
-          })
+        let amount = {
+          value: (userId !== this.id ? 'USER:' + userId : ''),
+          name: (this.active.split(':')[0] === 'ROOM' ? this.active.split(':')[1] : ''),
+          socket: this.socket
         }
+
+        this.$store.dispatch({
+          type: 'chat/setActive',
+          amount
+        })
       }
     }
   }

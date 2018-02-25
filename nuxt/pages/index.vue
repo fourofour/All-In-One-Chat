@@ -1,7 +1,7 @@
 <template>
   <section id="main-container">
     <Register v-if="!loggedIn" :socket="socket"/>
-    <AddMessage v-if="loggedIn" :socket="socket"/>
+    <AddMessage v-if="loggedIn" :socket="socket" :RoomSocket="RoomSocket"/>
     <MessageList v-if="loggedIn && active.length > 0" :id="id"/>
     <UsersList v-if="loggedIn" :id="id"/>
     <RoomsList v-if="loggedIn" :socket="socket" :RoomSocket="RoomSocket"/>

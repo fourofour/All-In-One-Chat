@@ -14,11 +14,21 @@
 <script>
   export default {
     props: [
-      'socket'
+      'socket',
+      'RoomSocket'
     ],
     data () {
       return {
         message: ''
+      }
+    },
+    watch: {
+      RoomSocket (v) {
+        v.removeListener('AddMessage')
+
+        v.on('AddMessage', function (message) {
+          console.log(message)
+        })
       }
     },
     computed: {
@@ -40,7 +50,9 @@
           }
 
           if (this.active.split(':')[0] === 'ROOM') {
-            data.room = this.active.split(':')[1]
+            data.room = {
+              key: this.active.split(':')[1]
+            }
           } else {
             data.target = {
               id: this.active.split(':')[1]

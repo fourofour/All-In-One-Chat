@@ -47,36 +47,15 @@ var io = require('socket.io')(http, {
 
 let clients = []
 let rooms = new Map([
-  ['/Global', io.of('/Global')],
-  ['/Server', io.of('/Server')]
+  ['Global', io.of('/Global')],
+  ['Server', io.of('/Server')]
 ])
 
 let createRoom = function (RoomKey) {
-  rooms.set(RoomKey, io.of(RoomKey))
+  rooms.set(RoomKey, io.to('/' + RoomKey))
 
-  rooms.get(RoomKey).on('join', function (socket) {
-    let { client } = getClientInfo(socket.id)
-    console.log(socket.id)
-
-    rooms.get(RoomKey).of(RoomKey).emit('AddMessage', {
-      type: 'SERVER_MESSAGE',
-      message: client.username + ' has joined the room',
-      room: {
-        key: RoomKey
-      }
-    })
-  })
-
-  rooms.get(RoomKey).on('leave', function (socket) {
-    let { client } = getClientInfo(socket.id)
-
-    rooms.get(RoomKey).of(RoomKey).emit('AddMessage', {
-      type: 'SERVER_MESSAGE',
-      message: client.username + ' has left the room',
-      room: {
-        key: RoomKey
-      }
-    })
+  rooms.get(RoomKey).on('NewMessage', function (message) {
+    console.log(message)
   })
 }
 
@@ -130,20 +109,32 @@ io.on('connection', function(socket) {
   })
 
   socket.on('JoinRoom', function(room) {
+    console.log('JoinRoom ' + socket.id)
+    let { client } = getClientInfo(socket.id)
+
     socket.join(room.key)
 
-    io.emit('JoinRoom', {
-      type: 'SYSTEM_JOIN_ROOM',
-      room
+    rooms.get(room.key).emit('AddMessage', {
+      type: 'SERVER_MESSAGE',
+      message: client.username + ' has joined the room',
+      room: {
+        key: room.key
+      }
     })
   })
 
   socket.on('LeaveRoom', function(room) {
+    console.log('LeaveRoom ' + socket.id)
+    let { client } = getClientInfo(socket.id)
+
     socket.leave(room.key)
 
-    io.emit('LeaveRoom', {
-      type: 'SYSTEM_LEAVE_ROOM',
-      room
+    rooms.get(room.key).emit('AddMessage', {
+      type: 'SERVER_MESSAGE',
+      message: client.username + ' has left the room',
+      room: {
+        key: room.key
+      }
     })
   })
 
@@ -162,6 +153,7 @@ io.on('connection', function(socket) {
   })
 
   socket.on('NewMessage', function(message) {
+    console.log(message)
     let { client } = getClientInfo(socket.id)
 
     message.username = client.username
@@ -172,7 +164,7 @@ io.on('connection', function(socket) {
     }
 
     if (message.room) {
-      rooms.get(message.room).emit('NewMessage', message)
+      rooms.get(message.room.key).emit('AddMessage', message)
     } else if (message.target) {
       if (message.target.id !== message.id) {
         io.emit(message.target.id, message)
@@ -184,7 +176,8 @@ io.on('connection', function(socket) {
     }
   })
 
-  socket.on('disconnecting', function() {
+  socket.on('disconnect', function() {
+    console.log('disconnect')
     let { client, index } = getClientInfo(socket.id)
 
     console.log(client.username + ' disconnected')
