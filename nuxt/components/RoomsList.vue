@@ -38,35 +38,28 @@
         }
       }
     },
-    watch: {
-      RoomSocket (v) {
-        v.removeListener('AddMessage')
-
-        v.on('AddMessage', function (message) {
-          console.log(message)
-        })
-      }
-    },
     methods: {
       setActive: function (name) {
-        if (this.active.split(':')[0] === 'ROOM') {
-          this.socket.emit('LeaveRoom', {
-            key: this.active.split(':')[1]
-          })
+        if (this.active.split(':')[0] !== 'ROOM' || this.active.split(':')[1] !== name) {
+          if (this.active.split(':')[0] === 'ROOM') {
+            this.socket.emit('LeaveRoom', {
+              key: this.active.split(':')[1]
+            })
+          }
 
           this.socket.emit('JoinRoom', {
             key: name
           })
-        }
 
-        this.$store.dispatch({
-          type: 'chat/setActive',
-          amount: {
-            value: 'ROOM:' + name,
-            socket: this.socket,
-            name
-          }
-        })
+          this.$store.dispatch({
+            type: 'chat/setActive',
+            amount: {
+              value: 'ROOM:' + name,
+              socket: this.socket,
+              name
+            }
+          })
+        }
       }
     }
   }
