@@ -18,7 +18,7 @@
 /*
 * message
 *  {
-*     type: USER_MESSAGE | SERVER_MESSAGE ! SYSTEM_INIT (String),
+*     type: USER_MESSAGE | SERVER_MESSAGE | SYSTEM_INIT | SERVER_FORCE_MESSAGE (String),
 *     id: userId (String),
 *     username: username (String),
 *     message: message (String),
@@ -48,12 +48,12 @@ var io = require('socket.io')(http, {
 
 let clients = []
 let rooms = new Map([
-  ['Global', io.of('/Global')],
-  ['Server', io.of('/Server')]
+  ['Global', io.in('Global')],
+  ['Server', io.in('Server')]
 ])
 
 let createRoom = function (RoomKey) {
-  rooms.set(RoomKey, io.to('/' + RoomKey))
+  rooms.set(RoomKey, io.in(RoomKey))
 }
 
 let getClientInfo = function (SocketId) {
@@ -164,10 +164,10 @@ io.on('connection', function(socket) {
       rooms.get(message.room.key).emit('AddMessage', message)
     } else if (message.target) {
       if (message.target.id !== message.id) {
-        io.clients().sockets[message.target.id].emit('AddMessage', message)
+        socket.to(message.target.id).emit('AddMessage', message)
       }
 
-      io.emit(message.id, message)
+      socket.emit('AddMessage', message)
     } else {
       io.emit('AddMessage', message)
     }
