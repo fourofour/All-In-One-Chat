@@ -48,12 +48,12 @@ var io = require('socket.io')(http, {
 
 let clients = []
 let rooms = new Map([
-  ['Global', io.in('Global')],
-  ['Server', io.in('Server')]
+  ['Global', 'room/global'],
+  ['Server', 'room/server']
 ])
 
 let createRoom = function (RoomKey) {
-  rooms.set(RoomKey, io.in(RoomKey))
+  rooms.set(RoomKey, 'room/' + RoomKey.toLowerCase())
 }
 
 let getClientInfo = function (SocketId) {
@@ -111,9 +111,7 @@ io.on('connection', function(socket) {
   socket.on('JoinRoom', function(room) {
     let { client } = getClientInfo(socket.id)
 
-    socket.join(room.key)
-
-    rooms.get(room.key).emit('AddMessage', {
+    io.emit(rooms.get(room.key), {
       type: 'SERVER_MESSAGE',
       message: client.username + ' has joined the room',
       room: {
@@ -125,9 +123,7 @@ io.on('connection', function(socket) {
   socket.on('LeaveRoom', function(room) {
     let { client } = getClientInfo(socket.id)
 
-    socket.leave(room.key)
-
-    rooms.get(room.key).emit('AddMessage', {
+    io.emit(rooms.get(room.key), {
       type: 'SERVER_MESSAGE',
       message: client.username + ' has left the room',
       room: {
@@ -161,7 +157,7 @@ io.on('connection', function(socket) {
     }
 
     if (message.room) {
-      rooms.get(message.room.key).emit('AddMessage', message)
+      io.emit(rooms.get(message.room.key), message)
     } else if (message.target) {
       if (message.target.id !== message.id) {
         socket.to(message.target.id).emit('AddMessage', message)

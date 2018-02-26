@@ -10,8 +10,5 @@ export default {
   },
   getActive: state => {
     return state.active.substring(0, state.active.length)
-  },
-  getSocket: state => {
-    return state.socket
   }
 }

@@ -1,10 +1,10 @@
 <template>
   <section id="main-container">
     <Register v-if="!loggedIn" :socket="socket"/>
-    <AddMessage v-if="loggedIn" :socket="socket" :RoomSocket="RoomSocket"/>
+    <AddMessage v-if="loggedIn" :socket="socket"/>
     <MessageList v-if="loggedIn && active.length > 0" :id="id"/>
     <UsersList v-if="loggedIn" :id="id"/>
-    <RoomsList v-if="loggedIn" :socket="socket" :RoomSocket="RoomSocket"/>
+    <RoomsList v-if="loggedIn" :socket="socket"/>
   </section>
 </template>
 
@@ -38,14 +38,6 @@
         set: function (newValue) {
           return newValue
         }
-      },
-      RoomSocket: {
-        get: function () {
-          return this.$store.getters['chat/getSocket']
-        },
-        set: function (newValue) {
-          return newValue
-        }
       }
     },
     mounted: function () {
@@ -62,7 +54,6 @@
       })
 
       this.socket.on('AddMessage', function(message) {
-        console.log(message)
         that.id = that.socket.id
         that.loggedIn = true
 
@@ -101,11 +92,11 @@
       })
     },
     beforeDestroy: function () {
-      this.socket.removeListener('AddMessage')
-      this.socket.removeListener('NewUser')
-      this.socket.removeListener('AddUser')
-      this.socket.removeListener('RemoveUser')
-      this.socket.removeListener(this.id)
+      this.socket.off('AddMessage')
+      this.socket.off('NewUser')
+      this.socket.off('AddUser')
+      this.socket.off('RemoveUser')
+      this.socket.off(this.id)
     }
   }
 </script>

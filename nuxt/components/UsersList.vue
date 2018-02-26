@@ -43,7 +43,8 @@
         let amount = {
           value: (userId !== this.id ? 'USER:' + userId : ''),
           name: (this.active.split(':')[0] === 'ROOM' ? this.active.split(':')[1] : ''),
-          socket: this.socket
+          socket: this.socket,
+          active: this.active
         }
 
         this.$store.dispatch({

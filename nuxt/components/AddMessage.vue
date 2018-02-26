@@ -14,21 +14,11 @@
 <script>
   export default {
     props: [
-      'socket',
-      'RoomSocket'
+      'socket'
     ],
     data () {
       return {
         message: ''
-      }
-    },
-    watch: {
-      RoomSocket (v) {
-        v.removeListener('AddMessage')
-
-        v.on('AddMessage', function (message) {
-          console.log(message)
-        })
       }
     },
     computed: {

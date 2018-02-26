@@ -6,8 +6,7 @@ const state = {
   messages: [],
   users: [],
   rooms: [],
-  active: '',
-  socket: null
+  active: ''
 }
 
 export default {

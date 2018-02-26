@@ -17,8 +17,7 @@
 <script>
   export default {
     props: [
-      'socket',
-      'RoomSocket'
+      'socket'
     ],
     computed: {
       rooms: {
@@ -40,15 +39,18 @@
     },
     methods: {
       setActive: function (name) {
-        if (this.active.split(':')[0] !== 'ROOM' || this.active.split(':')[1] !== name) {
-          if (this.active.split(':')[0] === 'ROOM') {
-            this.socket.emit('LeaveRoom', {
-              key: this.active.split(':')[1]
-            })
-          }
+        let that = this
 
-          this.socket.emit('JoinRoom', {
-            key: name
+        if (this.active.split(':')[0] !== 'ROOM' || this.active.split(':')[1] !== name) {
+          this.socket.on('room/' + name.toLowerCase(), function (message) {
+            switch (message.type) {
+              default:
+                that.$store.dispatch({
+                  type: 'chat/addMessage',
+                  amount: message
+                })
+                break
+            }
           })
 
           this.$store.dispatch({
@@ -56,7 +58,8 @@
             amount: {
               value: 'ROOM:' + name,
               socket: this.socket,
-              name
+              name,
+              active: this.active
             }
           })
         }

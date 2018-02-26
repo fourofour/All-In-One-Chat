@@ -60,10 +60,21 @@ export default {
       }
     })
   },
-  setActive (context, {amount: { value, socket, name}}) {
+  setActive (context, {amount: { value, socket, name, active}}) {
+    if (active.split(':')[0] === 'ROOM') {
+      socket.off('room/' + active.split(':')[1].toLowerCase())
+
+      socket.emit('LeaveRoom', {
+        key: active.split(':')[1]
+      })
+    }
+
     context.commit('setActive', value)
-  },
-  setSocket (context, data) {
-    context.commit('setSocket', data.amount)
+
+    if (value.split(':')[0] === 'ROOM') {
+      socket.emit('JoinRoom', {
+        key: name
+      })
+    }
   }
 }
