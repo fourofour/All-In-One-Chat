@@ -60,6 +60,7 @@ export default {
       }
     })
   },
+
   setActive (context, {amount: { value, socket, name, active}}) {
     if (active.split(':')[0] === 'ROOM') {
       socket.off('room/' + active.split(':')[1].toLowerCase())
